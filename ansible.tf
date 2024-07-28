@@ -1,10 +1,10 @@
-resource "time_sleep" "wait_30_seconds" {
+resource "time_sleep" "wait_60_seconds" {
   depends_on      = [aws_instance.main]
-  create_duration = var.revision == 1 ? "30s" : "0s"
+  create_duration = var.revision == 1 ? "60s" : "0s"
 }
 
 resource "null_resource" "ansible_os_patch" {
-  depends_on = [time_sleep.wait_30_seconds]
+  depends_on = [time_sleep.wait_60_seconds]
 
   provisioner "local-exec" {
     command = "ansible-playbook ${path.root}/playbooks/os_patch.yaml -vv"
@@ -23,7 +23,10 @@ resource "null_resource" "ansible_os_patch" {
 }
 
 resource "null_resource" "ansible_app_install" {
-  depends_on = [time_sleep.wait_30_seconds]
+  depends_on = [
+    time_sleep.wait_60_seconds,
+    null_resource.ansible_os_patch
+  ]
 
   provisioner "local-exec" {
     command = "ansible-playbook ${path.root}/playbooks/app_install.yaml -vv"

@@ -1,6 +1,7 @@
 ---
 - name: Setup Apache server with metadata info
   hosts: localhost
+  gather_facts: false
   vars:
     ansible_connection: community.aws.aws_ssm
     ansible_aws_ssm_instance_id: "{{ lookup('env','SSM_INSTANCE_ID') }}"
