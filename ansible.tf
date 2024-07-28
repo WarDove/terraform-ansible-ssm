@@ -1,4 +1,5 @@
 resource "time_sleep" "wait_30_seconds" {
+  depends_on      = [aws_instance.main]
   create_duration = var.revision == 1 ? "30s" : "0s"
 }
 
