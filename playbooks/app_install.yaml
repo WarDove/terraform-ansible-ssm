@@ -1,0 +1,68 @@
+---
+- name: Setup Apache server with metadata info
+  hosts: localhost
+  vars:
+    ansible_connection: community.aws.aws_ssm
+    ansible_aws_ssm_instance_id: "{{ lookup('env','SSM_INSTANCE_ID') }}"
+    ansible_aws_ssm_bucket_name: "{{ lookup('env','SSM_BUCKET_NAME') }}"
+    ansible_become: yes
+  tasks:
+    - name: Update apt repository cache
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+        cache_valid_time: 3600
+
+    - name: Install Apache2 and Unzip
+      apt:
+        name:
+          - apache2
+          - unzip
+        state: present
+
+    - name: Fetch Availability Zone
+      uri:
+        url: http://169.254.169.254/latest/meta-data/placement/availability-zone
+        return_content: yes
+      register: az
+
+    - name: Fetch Instance ID
+      uri:
+        url: http://169.254.169.254/latest/meta-data/instance-id
+        return_content: yes
+      register: instance_id
+
+    - name: Fetch Public IP
+      uri:
+        url: http://169.254.169.254/latest/meta-data/public-ipv4
+        return_content: yes
+      register: public_ip
+
+    - name: Fetch Local IP
+      uri:
+        url: http://169.254.169.254/latest/meta-data/local-ipv4
+        return_content: yes
+      register: local_ip
+
+    - name: Create index.html with metadata information
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+            <center>
+              <body bgcolor="black" text="#39ff14" style="font-family: Arial">
+                <h1>Terraform & Ansible Demo</h1>
+                <h3>Availability Zone: {{ az.content }}</h3>
+                <h3>Instance Id: {{ instance_id.content }}</h3>
+                <h3>Public IP: {{ public_ip.content }}</h3>
+                <h3>Local IP: {{ local_ip.content }}</h3>
+              </body>
+            </center>
+          </html>
+
+    - name: Ensure Apache2 is started and enabled
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+...
