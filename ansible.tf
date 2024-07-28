@@ -7,7 +7,7 @@ resource "null_resource" "ansible_os_patch" {
   depends_on = [time_sleep.wait_60_seconds]
 
   provisioner "local-exec" {
-    command = "ansible-playbook ${path.root}/playbooks/os_patch.yaml -vv"
+    command = "ansible-playbook ${path.root}/playbooks/os_patch.yaml"
 
     environment = {
       SSM_BUCKET_NAME = aws_s3_bucket.main.id
@@ -29,7 +29,7 @@ resource "null_resource" "ansible_app_install" {
   ]
 
   provisioner "local-exec" {
-    command = "ansible-playbook ${path.root}/playbooks/app_install.yaml -vv"
+    command = "ansible-playbook ${path.root}/playbooks/app_install.yaml"
 
     environment = {
       SSM_BUCKET_NAME = aws_s3_bucket.main.id
