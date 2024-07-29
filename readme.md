@@ -6,8 +6,7 @@
 ## Overview
 Welcome to the Terraform-Ansible-SSM project! This guide walks you through setting up a seamless deployment of infrastructure using Terraform, Ansible, and AWS Systems Manager for secure and efficient configuration management.
 
-## Guide/Reference
-https://dev.to
+## Guide/Reference - [dev.to article] (https://dev.to/wardove/terraform-ansible-and-aws-systems-manager-pipeline-a-powerful-trio-for-seamless-aws-infrastructure-automation-5gb0)
 
 ## Installation
 To get started, ensure you have the following prerequisites installed:
